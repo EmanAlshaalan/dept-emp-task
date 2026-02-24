@@ -1,7 +1,11 @@
 package com.example.dept_emp_task.employee.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CreateEmployeeRequest {
+    @NotBlank(message="Email is required")
     private String email;
+    
     private String name;
     public String getEmail() {
         return email;

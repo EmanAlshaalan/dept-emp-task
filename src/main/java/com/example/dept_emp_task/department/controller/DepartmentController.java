@@ -4,14 +4,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dept_emp_task.department.dto.CreateDepartmentRequest;
+import com.example.dept_emp_task.department.dto.DepartmentResponse;
 import com.example.dept_emp_task.department.dto.UpdateDepartmentRequest;
 import com.example.dept_emp_task.department.entity.Department;
 import com.example.dept_emp_task.department.service.DepartmentService;
 import com.example.dept_emp_task.employee.entity.Employee;
 import com.example.dept_emp_task.employee.service.EmployeeService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +37,7 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public Department create(@RequestBody CreateDepartmentRequest request) {
+    public Department create(@Valid @RequestBody CreateDepartmentRequest request) {
         return service.create(request.getName());
     }
 
@@ -42,15 +46,12 @@ public class DepartmentController {
         return service.findAll();
     }
 
-    @PatchMapping("/{id}/deactivate")
-    public Department deactivate(@PathVariable Long id) {
-        return service.deactivate(id);
-    }
-
     @PutMapping("/{id}")
-    public Department update(@PathVariable Long id, @RequestBody UpdateDepartmentRequest request) {
+    public ResponseEntity<DepartmentResponse> update(
+            @PathVariable Long id,
+            @RequestBody UpdateDepartmentRequest req) {
 
-        return service.update(id, request.getName());
+        return ResponseEntity.ok(service.update(id, req));
     }
 
     @GetMapping("/{id}/employees")

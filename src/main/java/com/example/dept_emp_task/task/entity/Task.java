@@ -1,8 +1,13 @@
 package com.example.dept_emp_task.task.entity;
 
 import java.time.LocalDate;
-import jakarta.persistence.Id;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,6 +38,11 @@ public class Task {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskStatus status = TaskStatus.NOT_STARTED;
+
+
+    @OneToMany(mappedBy = "task")
+    @JsonManagedReference
+    private List<EmployeeTask> assignments = new ArrayList<>();
 
     public Task() {
     }
@@ -92,6 +102,10 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public List<EmployeeTask> getAssignments() {
+        return assignments;
     }
 
 }

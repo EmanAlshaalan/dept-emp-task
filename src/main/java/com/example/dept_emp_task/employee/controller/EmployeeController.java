@@ -4,11 +4,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dept_emp_task.employee.dto.CreateEmployeeRequest;
+import com.example.dept_emp_task.employee.dto.EmployeeResponse;
 import com.example.dept_emp_task.employee.dto.UpdateEmployeeRequest;
+import com.example.dept_emp_task.employee.dto.UpdateEmployeeStatusRequest;
 import com.example.dept_emp_task.employee.entity.Employee;
 import com.example.dept_emp_task.employee.service.EmployeeService;
 import com.example.dept_emp_task.task.dto.UpdateEmployeeTaskStatusRequest;
 import com.example.dept_emp_task.task.service.EmployeeTaskService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,14 +52,11 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public Employee update(@PathVariable Long id, @RequestBody UpdateEmployeeRequest request) {
-        return service.update(id, request.getEmail(), request.getName());
-    }
+    public ResponseEntity<EmployeeResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateEmployeeRequest request) {
 
-    @PatchMapping("/{id}/deactivate")
-    public Employee deactivate(@PathVariable Long id) {
-        return service.deactivate(id);
-
+        return ResponseEntity.ok(service.update(id, request));
     }
 
     @GetMapping

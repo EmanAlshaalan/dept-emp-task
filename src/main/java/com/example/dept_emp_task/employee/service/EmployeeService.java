@@ -2,7 +2,10 @@ package com.example.dept_emp_task.employee.service;
 
 import java.util.List;
 
+import com.example.dept_emp_task.employee.dto.EmployeeResponse;
+import com.example.dept_emp_task.employee.dto.UpdateEmployeeRequest;
 import com.example.dept_emp_task.employee.entity.Employee;
+import com.example.dept_emp_task.employee.entity.EmployeeStatus;
 
 public interface EmployeeService {
 
@@ -12,9 +15,8 @@ public interface EmployeeService {
 
     List<Employee> getByDepartment(Long departmentId);
 
-    Employee update(Long id, String email, String name);
-
-    Employee deactivate(Long id);
-
+EmployeeResponse update(Long id, UpdateEmployeeRequest req);
+ 
     List<Employee> findAll();
+
 }

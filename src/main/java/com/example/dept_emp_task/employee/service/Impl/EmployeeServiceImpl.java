@@ -10,6 +10,8 @@ import com.example.dept_emp_task.common.exception.NotFoundException;
 import com.example.dept_emp_task.department.entity.Department;
 import com.example.dept_emp_task.department.entity.DepartmentStatus;
 import com.example.dept_emp_task.department.repository.DepartmentRepository;
+import com.example.dept_emp_task.employee.dto.EmployeeResponse;
+import com.example.dept_emp_task.employee.dto.UpdateEmployeeRequest;
 import com.example.dept_emp_task.employee.entity.Employee;
 import com.example.dept_emp_task.employee.entity.EmployeeStatus;
 import com.example.dept_emp_task.employee.repository.EmployeeRepository;
@@ -60,31 +62,43 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee update(Long id, String email, String name) {
+    public EmployeeResponse update(Long id, UpdateEmployeeRequest req) {
         Employee employee = employeeRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("employee not found "));
+                .orElseThrow(() -> new NotFoundException("employee not found"));
 
-        if (!employee.getEmail().equals(email) && employeeRepo.existsByEmail(email)) {
-            throw new ConflictException("Email already exists");
+        if (req.getEmail() != null) {
+            String newEmail = req.getEmail().trim().toLowerCase();
+
+            if (!employee.getEmail().equalsIgnoreCase(newEmail) && employeeRepo.existsByEmail(newEmail)) {
+                throw new ConflictException("Email already exists");
+            }
+            employee.setEmail(newEmail);
         }
 
-        employee.setEmail(email);
-        employee.setName(name);
+        if (req.getName() != null) {
+            employee.setName(req.getName().trim());
+        }
 
-        return employeeRepo.save(employee);
+        if (req.getStatus() != null) {
+            employee.setStatus(req.getStatus());
+        }
 
+        Employee saved = employeeRepo.save(employee);
+        Long deptId = saved.getDepartment() != null ? saved.getDepartment().getId() : null;
+        String deptName = saved.getDepartment() != null ? saved.getDepartment().getName() : null;
+
+       
+    return new EmployeeResponse(
+            saved.getId(),
+            saved.getName(),
+            saved.getEmail(),
+            saved.getStatus().name(),
+            deptId,
+            deptName
+    );
     }
 
-    @Override
-    public Employee deactivate(Long id) {
-        Employee employee = employeeRepo.findById(id)
-        .orElseThrow(()-> new NotFoundException("employee not found"));
 
-        employee.setStatus(EmployeeStatus.INACTIVE);
-
-        return employeeRepo.save(employee);
-
-    }
 
     @Override
     public List<Employee> findAll() {

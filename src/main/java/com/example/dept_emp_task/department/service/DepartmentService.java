@@ -2,6 +2,8 @@ package com.example.dept_emp_task.department.service;
 
 import java.util.List;
 
+import com.example.dept_emp_task.department.dto.DepartmentResponse;
+import com.example.dept_emp_task.department.dto.UpdateDepartmentRequest;
 import com.example.dept_emp_task.department.entity.Department;
 
 public interface DepartmentService {
@@ -12,5 +14,5 @@ public interface DepartmentService {
 
     Department deactivate(Long id);
 
-    Department update(Long id,String name);
+    DepartmentResponse update(Long id, UpdateDepartmentRequest req);
 }

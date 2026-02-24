@@ -1,9 +1,13 @@
 package com.example.dept_emp_task.task.dto;
 
+import jakarta.validation.constraints.Min;
+
 public class CreateTaskRequest {
     private String name;
     private String startDate;
     private String endDate;
+    
+      @Min(value = 1, message="Duration must be >= 1")
     private Integer duration;
     public String getName() {
         return name;

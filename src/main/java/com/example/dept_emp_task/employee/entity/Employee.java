@@ -4,7 +4,10 @@ import com.example.dept_emp_task.department.entity.Department;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "employees")
+@Table(name = "employees",
+      uniqueConstraints = @UniqueConstraint(name="uk_employees_email", columnNames="email")
+
+)
 public class Employee {
 
     @Id
@@ -23,7 +26,7 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    private Department department; // can be null (unassigned)
+    private Department department; 
 
     public Employee() {}
 

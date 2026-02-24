@@ -6,7 +6,10 @@ import javax.management.RuntimeErrorException;
 
 import org.springframework.stereotype.Service;
 
+import com.example.dept_emp_task.common.exception.ConflictException;
 import com.example.dept_emp_task.common.exception.NotFoundException;
+import com.example.dept_emp_task.department.dto.DepartmentResponse;
+import com.example.dept_emp_task.department.dto.UpdateDepartmentRequest;
 import com.example.dept_emp_task.department.entity.Department;
 import com.example.dept_emp_task.department.entity.DepartmentStatus;
 import com.example.dept_emp_task.department.repository.DepartmentRepository;
@@ -22,6 +25,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department create(String name) {
+          if (repo.existsByNameIgnoreCase(name)) {
+            throw new ConflictException("name already exisit");
+        }
         return repo.save(new Department(name));
     }
 
@@ -40,11 +46,25 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department update(Long id, String name) {
-      Department d = repo.findById(id).orElseThrow(()-> new NotFoundException("department not found"));
+public DepartmentResponse update(Long id, UpdateDepartmentRequest req) {
 
-      d.setName(name);
-      return repo.save(d);
+    Department department = repo.findById(id)
+            .orElseThrow(() -> new NotFoundException("Department not found"));
+
+    if (req.getName() != null) {
+        department.setName(req.getName().trim());
     }
 
+    if (req.getStatus() != null) {
+        department.setStatus(req.getStatus());
+    }
+
+    Department saved = repo.save(department);
+
+    return new DepartmentResponse(
+            saved.getId(),
+            saved.getName(),
+            saved.getStatus().name()
+    );
+}
 }

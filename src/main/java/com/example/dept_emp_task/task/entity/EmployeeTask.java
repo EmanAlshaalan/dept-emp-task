@@ -1,6 +1,7 @@
 package com.example.dept_emp_task.task.entity;
 
 import com.example.dept_emp_task.employee.entity.Employee;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +29,7 @@ public class EmployeeTask {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "task_id", nullable = false)
+    @JsonBackReference
     private Task task;
 
 
